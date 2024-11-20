@@ -30,12 +30,18 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
 
       if (error) throw error;
 
-      const tasks = data.map(task => ({
-        ...task,
+      const tasks: Task[] = data.map(task => ({
         id: task.id,
+        title: task.title,
+        description: task.description,
+        category: task.category || 'work', // Default category
+        status: task.status as TaskStatus || 'pending',
+        notes: task.notes || '',
         timeSpent: task.time_spent || 0,
-        createdAt: new Date(task.created_at),
+        createdAt: new Date(task.created_at || new Date()),
         completedAt: task.completed_at ? new Date(task.completed_at) : null,
+        priority: task.priority,
+        assigned_to: task.assigned_to
       }));
 
       set({ tasks });
@@ -55,18 +61,25 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
           status: task.status,
           notes: task.notes,
           time_spent: 0,
+          priority: 'medium',
         }])
         .select()
         .single();
 
       if (error) throw error;
 
-      const newTask = {
-        ...data,
+      const newTask: Task = {
         id: data.id,
+        title: data.title,
+        description: data.description,
+        category: data.category || 'work',
+        status: data.status as TaskStatus,
+        notes: data.notes || '',
         timeSpent: data.time_spent || 0,
         createdAt: new Date(data.created_at),
         completedAt: data.completed_at ? new Date(data.completed_at) : null,
+        priority: data.priority,
+        assigned_to: data.assigned_to
       };
 
       set(state => ({
