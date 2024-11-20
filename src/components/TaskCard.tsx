@@ -12,9 +12,15 @@ export const TaskCard = ({ task }: TaskCardProps) => {
   const { updateTaskStatus, updateTaskNotes } = useTaskStore();
 
   const statusColors = {
-    pending: 'bg-status-pending',
-    progress: 'bg-status-progress',
-    completed: 'bg-status-completed',
+    pending: 'bg-yellow-500',
+    progress: 'bg-blue-500',
+    completed: 'bg-green-500',
+  };
+
+  const formatTime = (seconds: number) => {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    return `${hours}h ${minutes}m`;
   };
 
   return (
@@ -32,6 +38,12 @@ export const TaskCard = ({ task }: TaskCardProps) => {
       
       <p className="text-gray-600 mb-4">{task.description}</p>
       
+      <div className="mb-4">
+        <p className="text-sm text-gray-500">
+          Time spent: {formatTime(task.timeSpent)}
+        </p>
+      </div>
+
       <Textarea
         value={task.notes}
         onChange={(e) => updateTaskNotes(task.id, e.target.value)}

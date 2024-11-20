@@ -8,6 +8,7 @@ interface TaskStore {
   updateTaskStatus: (id: string, status: TaskStatus) => void;
   updateTaskNotes: (id: string, notes: string) => void;
   updateTimer: () => void;
+  updateTaskTime: (id: string) => void;
 }
 
 export const useTaskStore = create<TaskStore>((set) => ({
@@ -15,6 +16,7 @@ export const useTaskStore = create<TaskStore>((set) => ({
   timer: {
     weeklyTimeRemaining: 24 * 60 * 60, // 24 hours in seconds
     isRunning: false,
+    activeTaskId: null,
   },
   addTask: (task) =>
     set((state) => ({
@@ -33,6 +35,11 @@ export const useTaskStore = create<TaskStore>((set) => ({
       tasks: state.tasks.map((task) =>
         task.id === id ? { ...task, status } : task
       ),
+      timer: {
+        ...state.timer,
+        isRunning: status === 'progress',
+        activeTaskId: status === 'progress' ? id : null,
+      },
     })),
   updateTaskNotes: (id, notes) =>
     set((state) => ({
@@ -46,5 +53,11 @@ export const useTaskStore = create<TaskStore>((set) => ({
         ...state.timer,
         weeklyTimeRemaining: Math.max(0, state.timer.weeklyTimeRemaining - 1),
       },
+    })),
+  updateTaskTime: (id) =>
+    set((state) => ({
+      tasks: state.tasks.map((task) =>
+        task.id === id ? { ...task, timeSpent: task.timeSpent + 1 } : task
+      ),
     })),
 }));

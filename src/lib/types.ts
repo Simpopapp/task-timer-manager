@@ -15,4 +15,5 @@ export interface Task {
 export interface Timer {
   weeklyTimeRemaining: number;
   isRunning: boolean;
+  activeTaskId: string | null;
 }
