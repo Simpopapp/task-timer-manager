@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 interface TaskStore {
   tasks: Task[];
   timer: Timer;
-  addTask: (task: Omit<Task, 'id' | 'timeSpent' | 'createdAt' | 'completedAt'>) => Promise<void>;
+  addTask: (task: Omit<Task, 'id' | 'timeSpent' | 'createdAt' | 'completedAt' | 'priority' | 'assigned_to'>) => Promise<void>;
   updateTaskStatus: (id: string, status: TaskStatus) => Promise<void>;
   updateTaskNotes: (id: string, notes: string) => Promise<void>;
   updateTimer: () => void;
@@ -34,9 +34,9 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
         id: task.id,
         title: task.title,
         description: task.description,
-        category: task.category || 'work', // Default category
-        status: task.status as TaskStatus || 'pending',
-        notes: task.notes || '',
+        category: 'work', // Default category since it's not in DB
+        status: (task.status as TaskStatus) || 'pending',
+        notes: '', // Default empty notes since it's not in DB
         timeSpent: task.time_spent || 0,
         createdAt: new Date(task.created_at || new Date()),
         completedAt: task.completed_at ? new Date(task.completed_at) : null,
@@ -57,7 +57,6 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
         .insert([{
           title: task.title,
           description: task.description,
-          category: task.category,
           status: task.status,
           notes: task.notes,
           time_spent: 0,
@@ -72,9 +71,9 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
         id: data.id,
         title: data.title,
         description: data.description,
-        category: data.category || 'work',
+        category: 'work', // Default category
         status: data.status as TaskStatus,
-        notes: data.notes || '',
+        notes: '', // Default empty notes
         timeSpent: data.time_spent || 0,
         createdAt: new Date(data.created_at),
         completedAt: data.completed_at ? new Date(data.completed_at) : null,
