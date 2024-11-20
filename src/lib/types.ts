@@ -10,6 +10,7 @@ export interface Task {
   notes: string;
   timeSpent: number;
   createdAt: Date;
+  completedAt?: Date | null;
 }
 
 export interface Timer {
